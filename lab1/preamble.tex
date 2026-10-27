@@ -1,0 +1,32 @@
+\usepackage[margin=0.75in]{geometry}
+
+\usepackage{polyglossia}
+\setdefaultlanguage{vietnamese}
+\setotherlanguage{english}
+
+\usepackage{enumitem}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{import}
+
+\usepackage[ruled,vlined]{algorithm2e}
+\newcommand{\algorithmname}{Thuật toán}
+\SetAlgorithmName{\algorithmname}{\algorithmname}{Danh sách thuật toán}
+\SetKwProg{Fn}{function}{}{end}
+\SetKw{KwStep}{step}
+\SetKw{KwFrom}{from}
+\SetKw{KwDownTo}{down~to}
+\SetKw{KwBreak}{break}
+\DontPrintSemicolon
+
+\newcounter{problem}
+\setcounter{problem}{1}
+\newenvironment{problem}
+  {\par\noindent Problem \arabic{problem}.\ \ignorespaces}
+  {\stepcounter{problem}\par\ignorespacesafterend}
+
+\newenvironment{loigiai}
+  {\par\noindent {\itshape Lời giải.}\ \ignorespaces}
+  {\par\ignorespacesafterend}
+
+\usepackage{mdframed}
+\newcommand{\ZZ}{{\mathbb Z}}

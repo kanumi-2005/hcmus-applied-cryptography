@@ -1,0 +1,40 @@
+\begin{problem}{\bf Linear (and affine) encryption schemes are insecure} (10 points)\\
+Let $n \geq 2$ be an integer. Let $A$ be an invertible
+$n \times n$ binary matrix, and let $b$ be a $1 \times n$ binary
+vector. In the Hill symmetric-key encryption scheme, the secret
+key is a pair $(A,b)$. Plaintext messages $m$ are represented as
+$1 \times n$ binary vectors. The encryption function is
+$E(m) = mA + b$.\\
+\emph{Note: All arithmetic is performed modulo 2. You may assume
+that linear algebra ``works'' modulo 2.}\\
+Here is a toy example with $n=5$:
+\[ A = \left[
+       \begin{array}{ccccc}
+       1&0&0&0&1\\
+       0&1&0&1&1\\
+       0&0&1&1&0\\
+       0&1&0&1&0\\
+       0&0&1&0&1\\
+       \end{array} \right] ,
+   \;\;\;\;
+   b = [1,1,0,1,1],
+   \;\;\;\;
+   m = [1,0,1,0,1],
+   \;\;\; \mbox{and } \;\;\; E(m) = [0,1,0,0,1].
+\]
+\begin{enumerate}[label=(\alph*)]
+\item Give a decryption formula for the Hill cipher (with general
+      parameter $n$).
+\item Show how an adversary can efficiently determine the secret key
+      $(A,b)$ using a \emph{chosen-plaintext} attack.
+\item In a \emph{chosen-ciphertext} attack, the adversary is given a
+      challenge ciphertext $c$. She can obtain (by asking Alice or Bob,
+      who know the secret key) the plaintext of \emph{any} ciphertext of
+      her choice \emph{except for $c$ itself}. Her task is to decrypt $c$.\\
+      Show how the adversary can decrypt $c$ by obtaining the decryptions
+      of at most 3 ciphertexts (each different from $c$) from Alice or Bob.
+\end{enumerate}
+\end{problem}
+
+\begin{loigiai}
+\end{loigiai}
