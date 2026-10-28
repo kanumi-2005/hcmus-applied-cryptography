@@ -5,4 +5,44 @@ of AES-128 under a \emph{chosen-plaintext attack}. Analyze your attack with
 regard to time, space, and number of chosen plaintexts.\end{problem}
 
 \begin{loigiai}
+  Thuật toán AES encryption khi bỏ qua ShiftRows là:\\
+  \begin{algorithm}[H]
+    \KwIn{Plaintext $P$, round keys $k_0,k_1,\ldots,k_h$}
+    \KwOut{Ciphertext $C$}
+
+    $\text{State} \leftarrow P$\;
+    $\text{State} \leftarrow \text{State} \oplus k_0$\;
+
+    \For{$i \leftarrow 1$ \KwTo $h-1$}{
+      $\text{State} \leftarrow \text{SubBytes}(\text{State})$\;
+      %% $\text{State} \leftarrow \text{ShiftRows}(\text{State})$\;
+      $\text{State} \leftarrow \text{MixColumns}(\text{State})$\;
+      $\text{State} \leftarrow \text{State} \oplus k_i$\;
+    }
+
+    $\text{State} \leftarrow \text{SubBytes}(\text{State})$\;
+    %% $\text{State} \leftarrow \text{ShiftRows}(\text{State})$\;
+    $\text{State} \leftarrow \text{State} \oplus k_h$\;
+
+    $C \leftarrow \text{State}$\;
+
+    \caption{AES-128 Encryption without ShiftRows}
+  \end{algorithm}
+  Vì bỏ ShiftRows nên AES-128 trờ thành thuật toán mã hoá từng cột độc lập với nhau. Ta chia $P$ thành 4 cột:
+  \begin{equation}
+    P = (P_1, P_2, P_3, P_4).
+  \end{equation} Với $P_i$ là cột thứ i trong $P$ gồm 32 bits. Khi đó với khoá cố định, cột i của C chỉ phụ thuộc vào cột i trong P.
+  \begin{equation}
+    C_i = E_i(P_i).
+  \end{equation} Do đó ta có thể phá được mã hoá này bằng chosen-plaintext attack bằng cách xây dựng bảng tra cứu $E_i$ ánh xạ từ plaintex đến ciphertext cho từng cột theo các bước sau:
+  \begin{enumerate}
+  \item Xây dựng bảng tra cứu $T_i$ tương ứng cho mỗi $E_i$ gồm $2^{32}$ phần tử với mỗi phần tử là 1 số $2^{32}$ bit.
+  \item Lặp lại cho từng plaintext $P^{(x)}=(x, x, x, x)$ với $x$ từ $0$ đến $2^{32}-1$. và khi mã hoá ta nhận được $C^{(x)}=(E_o(x), E_1(x), E_2(x), E_3(x))$. Lưu giá trị vào bảng tra cứu $T_i[E_i(x)] = x$.
+  \end{enumerate}
+  Phân tích độ phức tạp của cuộc tấn công:
+  \begin{itemize}
+  \item Thời gian: $2^{32}$ vì ta cần phải chạy đủ $2^{32}$ lần.
+  \item Không gian: $2^{36}$ bytes (64 GB) vì có 4 bảng và mỗi bảng gồm $2^{32}$ phần tử 4 bytes.
+  \item Số plaintext được chọn: $2^{32}$.
+  \end{itemize}
 \end{loigiai}
