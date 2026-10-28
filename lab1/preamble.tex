@@ -21,12 +21,12 @@
 \newcounter{problem}
 \setcounter{problem}{1}
 \newenvironment{problem}
-  {\par\noindent Problem \arabic{problem}.\ \ignorespaces}
-  {\stepcounter{problem}\par\ignorespacesafterend}
+  {\par\addvspace{\medskipamount}\noindent Problem \arabic{problem}.\ \ignorespaces}
+  {\stepcounter{problem}\par\addvspace{\smallskipamount}\ignorespacesafterend}
 
 \newenvironment{loigiai}
-  {\par\noindent {\itshape Lời giải.}\ \ignorespaces}
-  {\par\ignorespacesafterend}
+  {\par\addvspace{\medskipamount}\noindent {\itshape Lời giải.}\ \ignorespaces}
+  {\par\addvspace{\smallskipamount}\ignorespacesafterend}
 
 \usepackage{mdframed}
 \newcommand{\ZZ}{{\mathbb Z}}
