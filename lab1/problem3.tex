@@ -3,22 +3,253 @@ In this question, you have to assume that the total amount of storage
 space available is 1,000 Terabytes ($\approx 2^{53}$ bits).
 \begin{enumerate}[label=(\alph*)]
 \item Describe a known-plaintext meet-in-the-middle attack on Double-DES
-      that recovers the secret key. You should justify the correctness
-      of the algorithm, estimate the expected number of DES operations
-      the algorithm takes, and justify that the algorithm requires at most
-      1,000 Terabytes of storage. (A \emph{DES operation} is a
-      single-DES encryption or a single-DES decryption.) Of course,
-      you should design your algorithm to be as fast as you can.
+that recovers the secret key. You should justify the correctness
+of the algorithm, estimate the expected number of DES operations
+the algorithm takes, and justify that the algorithm requires at most
+1,000 Terabytes of storage. (A \emph{DES operation} is a
+single-DES encryption or a single-DES decryption.) Of course,
+you should design your algorithm to be as fast as you can.
+
 \item Suppose that you have access to a network of 1,000 computers, each
-      computer capable of performing 5,000,000 DES operations per second.
-      The computers have access to shared storage, and you can assume
-      for simplicity that accessing this storage takes negligible time.
-      Estimate the expected number of calendar years your algorithm takes
-      when run on this network. Compare this to the estimated number of
-      calendar years that exhaustive key search on Double-DES would take
-      when run on the same network.
+computer capable of performing 5,000,000 DES operations per second.
+The computers have access to shared storage, and you can assume
+for simplicity that accessing this storage takes negligible time.
+Estimate the expected number of calendar years your algorithm takes
+when run on this network. Compare this to the estimated number of
+calendar years that exhaustive key search on Double-DES would take
+when run on the same network.
 \end{enumerate}
 \end{problem}
 
+
 \begin{loigiai}
+\textbf{(a) Tấn công Meet-in-the-Middle trên Double-DES}
+
+Gọi khóa bí mật Double-DES là $(k_1,k_2)$, trong đó
+$k_1,k_2 \in \{0,1\}^{56}$. Quá trình mã hóa được xác định bởi
+\[
+c = E_{k_2}(E_{k_1}(p)),
+\]
+trong đó $E_k$ và $D_k=E_k^{-1}$ lần lượt là phép mã hóa
+và giải mã DES với khóa $k$.
+
+Giả sử ta biết ba cặp plaintext/ciphertext
+$(p_1,c_1)$, $(p_2,c_2)$ và $(p_3,c_3)$.
+
+\textbf{1. Mô tả thuật toán}
+
+Để đáp ứng giới hạn bộ nhớ, ta chia không gian khóa $h_2$
+thành $2^{10}$ nhóm, mỗi nhóm gồm $2^{46}$ khóa. Với mỗi
+nhóm, thực hiện thuật toán sau.
+
+\begin{algorithm}[H]
+\caption{Tấn công Meet-in-the-Middle trên Double-DES}
+\KwIn{Ba cặp $(p_1,c_1)$, $(p_2,c_2)$, $(p_3,c_3)$}
+\KwOut{Khóa bí mật $(k_1,k_2)$}
+
+Chia $\{0,1\}^{56}$ thành $2^{10}$ nhóm $G$, mỗi nhóm có
+$2^{46}$ khóa\;
+
+\ForEach{nhóm $G$}{
+    Khởi tạo bảng $T$\;
+
+    \ForEach{$h_2 \in G$ \tcp*{$h_2$ là một giá trị dự đoán của $k_2$}}{
+        $x \gets D_{h_2}(c_1)$\;
+        Lưu $(x,\operatorname{index}(h_2))$ vào bảng $T$\;
+    }
+
+    Sắp xếp bảng $T$ theo thành phần $x$\;
+
+    \ForEach{$h_1 \in \{0,1\}^{56}$\tcp*{$h_1$ là một giá trị dự đoán của $k_1$}}{
+        $y \gets E_{h_1}(p_1)$\;
+        Tìm tất cả mục trong $T$ có thành phần thứ nhất bằng $y$\;
+
+        \ForEach{mục khớp tương ứng với khóa $h_2$}{
+            \If{$E_{h_2}(E_{h_1}(p_2))=c_2$}{
+                \If{$E_{h_2}(E_{h_1}(p_3))=c_3$}{
+                    Xuất $(h_1,h_2)$ và dừng\;
+                }
+            }
+        }
+    }
+}
+\end{algorithm}
+
+Ở đây, $\operatorname{index}(h_2)$ là chỉ số 46 bit xác định
+khóa $h_2$ trong nhóm hiện tại. Sau khi tìm được chỉ số,
+ta khôi phục khóa $h_2$ tương ứng.
+
+\textbf{2. Chứng minh tính đúng đắn}
+
+Từ công thức mã hóa Double-DES, ta có
+\[
+c_1=E_{k_2}(E_{k_1}(p_1)).
+\]
+Áp dụng phép giải mã $D_{k_2}$ lên hai vế, suy ra
+\[
+D_{k_2}(c_1)=E_{k_1}(p_1).
+\]
+
+Do đó, khi xử lý nhóm chứa khóa bí mật $k_2$, giá trị
+$D_{k_2}(c_1)$ trong bảng sẽ trùng với giá trị
+$E_{k_1}(p_1)$ khi thuật toán xét $h_1=k_1$. Vì vậy,
+khóa bí mật thực sự luôn được đưa vào tập ứng viên.
+
+Thuật toán tiếp tục kiểm tra hai cặp plaintext/ciphertext
+còn lại:
+\[
+E_{h_2}(E_{h_1}(p_2))=c_2,
+\]
+\[
+E_{h_2}(E_{h_1}(p_3))=c_3.
+\]
+
+Khóa bí mật thực sự luôn thỏa mãn cả hai điều kiện trên.
+Theo giả định các kết quả mã hóa có tính chất ngẫu nhiên,
+với một khóa sai, xác suất khớp cả ba cặp đã biết xấp xỉ
+$2^{-192}$. Vì có khoảng $2^{112}$ cặp khóa, số khóa sai
+kỳ vọng vượt qua cả ba phép kiểm tra là
+\[
+F_K \approx \frac{2^{112}}{2^{192}}=2^{-80}.
+\]
+Do đó, xác suất thu được khóa sai là rất nhỏ.
+
+\textbf{3. Ước tính số phép toán DES}
+
+\begin{itemize}
+    \item Có $2^{10}$ nhóm khóa $h_2$, mỗi nhóm chứa $2^{46}$ khóa.
+    Với mỗi nhóm, việc xây dựng bảng cần $2^{46}$ phép giải mã DES,
+    còn việc duyệt toàn bộ $2^{56}$ khóa $h_1$ cần $2^{56}$ phép mã hóa DES.
+    Do đó, tổng chi phí của hai công việc này là
+    \[
+    T_{\mathrm{main}}
+    =2^{10}\cdot 2^{46}+2^{10}\cdot 2^{56}
+    =2^{56}+2^{66}.
+    \]
+
+    \item Theo giả định các giá trị trung gian phân bố ngẫu nhiên,
+    số cặp khóa $(h_1,h_2)$ thỏa mãn
+    \[
+    E_{h_2}(E_{h_1}(m_1))=c_1
+    \]
+    có kỳ vọng xấp xỉ
+    \[
+    \mathbb{E}[X_1]
+    \approx \frac{2^{112}}{2^{64}}
+    =2^{48}.
+    \]
+    Mỗi ứng viên cần $2$ phép toán DES để kiểm tra cặp plaintext/ciphertext
+    thứ hai. Vì vậy, kỳ vọng của chi phí kiểm tra là
+    \[
+    T_{\mathrm{check},2}=2\cdot 2^{48}=2^{49}.
+    \]
+
+    \item Theo công thức số khóa sai kỳ vọng, sau khi kiểm tra hai cặp
+    bản rõ--bản mã, số khóa sai còn lại có kỳ vọng
+    \[
+    \mathbb{E}[F_K]
+    \approx \frac{2^{112}}{2^{64\cdot 2}}
+    =2^{-16}.
+    \]
+    Cộng với khóa đúng, số ứng viên cần kiểm tra bằng cặp thứ ba
+    có kỳ vọng xấp xỉ $1+2^{-16}$. Do mỗi ứng viên cần $2$ phép toán
+    DES, kỳ vọng của chi phí kiểm tra là
+    \[
+    T_{\mathrm{check},3}=2(1+2^{-16}).
+    \]
+\end{itemize}
+
+Vậy tổng số phép toán DES kỳ vọng là
+\[
+\begin{aligned}
+\mathbb{E}[T]
+&=T_{\mathrm{main}}+T_{\mathrm{check},2}
+  +T_{\mathrm{check},3}\\
+&=2^{56}+2^{66}+2^{49}+2(1+2^{-16})\\
+&\approx \boxed{2^{66}\text{ phép toán DES}}.
+\end{aligned}
+\]
+
+Các chi phí kiểm tra ứng viên đã được tính vào tổng số phép toán.
+Tuy nhiên, chúng nhỏ hơn nhiều so với chi phí duyệt khóa $2^{66}$,
+nên không làm thay đổi bậc độ lớn của tổng chi phí kỳ vọng.
+
+\textbf{4. Phân tích dung lượng lưu trữ}
+
+Bảng $T$ chứa $2^{46}$ mục. Mỗi mục lưu một giá trị trung
+gian 64 bit và một chỉ số khóa 46 bit, tổng cộng 110 bit.
+
+Vì vậy, dung lượng lưu trữ cần thiết là
+\[
+S=110\cdot 2^{46}\text{ bit}.
+\]
+
+Đổi trực tiếp sang TB theo hệ đơn vị thập phân,
+với $1\text{ TB}=10^{12}$ byte:
+\[
+\begin{aligned}
+S
+&=\frac{110\cdot 2^{46}}{8\cdot 10^{12}}\text{ TB}\\
+&\approx \boxed{967.6\text{ TB}<1000\text{ TB}}.
+\end{aligned}
+\]
+
+Vì thuật toán chỉ lưu bảng của một nhóm tại mỗi thời điểm,
+nó đáp ứng giới hạn bộ nhớ đã cho trong mô hình lưu trữ
+lý thuyết, chưa tính bộ nhớ phụ trợ của cấu trúc dữ liệu.
+
+\textbf{(b) Ước tính thời gian chạy trên mạng máy tính}
+
+Mạng có $1{,}000$ máy tính, mỗi máy thực hiện được
+$5{,}000{,}000$ phép toán DES mỗi giây. Tổng tốc độ xử lý là
+\[
+R=1000\cdot5\times10^6
+=5\times10^9\text{ phép toán DES/giây}.
+\]
+
+Một năm có khoảng
+\[
+D=365.25\cdot24\cdot3600
+=31{,}557{,}600\text{ giây}.
+\]
+
+Theo câu (a), kỳ vọng số phép toán DES của thuật toán
+Meet-in-the-Middle là
+\[
+\begin{aligned}
+\mathbb{E}[T]
+&=2^{56}+2^{66}+2^{49}+2(1+2^{-16}).
+\end{aligned}
+\]
+
+Do đó, thời gian chạy trung bình là
+\[
+\begin{aligned}
+Y_{\mathrm{MITM}}
+&=\frac{\mathbb{E}[T]}{R\cdot D}\\
+&=\frac{2^{56}+2^{66}+2^{49}+2(1+2^{-16})}
+{5\times10^9\cdot31{,}557{,}600}\\
+&\approx\boxed{468\text{ năm}}.
+\end{aligned}
+\]
+
+Đối với vét cạn khóa Double-DES, có $2^{112}$ cặp khóa.
+Trong trường hợp khóa đúng được phân bố đều theo thứ tự thử,
+khi đó kỳ vọng số cặp khóa cần thử là $2^{111}$. Mỗi cặp khóa
+cần tối đa $2$ phép toán DES để kiểm tra, nên kỳ vọng số phép toán
+DES xấp xỉ $2^{112}$.
+
+Vì vậy,  thời gian vét cạn trung bình là
+\[
+\begin{aligned}
+Y_{\mathrm{brute-force}}
+&=\frac{2^{112}}{R\cdot D}\\
+&\approx\boxed{3.29\times10^{16}\text{ năm}}.
+\end{aligned}
+\]
+
+Như vậy, thuật toán Meet-in-the-Middle cần khoảng trung bình $468$ năm,
+nhanh hơn rất nhiều so với vét cạn khóa Double-DES, vốn cần
+khoảng trung bình $3.29\times10^{16}$ năm.
+
 \end{loigiai}
