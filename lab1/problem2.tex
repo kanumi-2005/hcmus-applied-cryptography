@@ -13,4 +13,76 @@ schemes on slides 2.14 and 2.15.)
 
 \begin{loigiai}
 
+(a) According to slide 2.36, the function $QR$ takes
+four 32-bit words $(a,b,c,d)$ as input and performs the following
+operations:
+
+\begin{align*}
+a &\leftarrow a \boxplus b, &
+d &\leftarrow d \oplus a, &
+d &\leftarrow d \lll 16,\\
+c &\leftarrow c \boxplus d, &
+b &\leftarrow b \oplus c, &
+b &\leftarrow b \lll 12,\\
+a &\leftarrow a \boxplus b, &
+d &\leftarrow d \oplus a, &
+d &\leftarrow d \lll 8,\\
+c &\leftarrow c \boxplus d, &
+b &\leftarrow b \oplus c, &
+b &\leftarrow b \lll 7.
+\end{align*}
+
+$\boxplus$ denotes addition modulo $2^{32}$,
+$\oplus$ denotes bitwise XOR, and $\lll t$ denotes left
+rotation by $t$ bit positions.
+
+Each operation is invertible: Modular addition is inverted by modular subtraction.
+XOR is its own inverse: $(x\oplus y)\oplus y=x$. Left rotation by $t$ bits is inverted by right rotation by $t$ bits, denoted by $\ggg t$.
+
+Let $(a,b,c,d)$ now denote the output of $QR$. $\boxminus$ denotes subtraction modulo $2^{32}$. To recover
+the original input, reverse the operations in the opposite order:
+\begin{align*}
+b &\leftarrow b \ggg 7,\\
+b &\leftarrow b \oplus c,\\
+c &\leftarrow c \boxminus d,\\
+d &\leftarrow d \ggg 8,\\
+d &\leftarrow d \oplus a,\\
+a &\leftarrow a \boxminus b,\\
+b &\leftarrow b \ggg 12,\\
+b &\leftarrow b \oplus c,\\
+c &\leftarrow c \boxminus d,\\
+d &\leftarrow d \ggg 16,\\
+d &\leftarrow d \oplus a,\\
+a &\leftarrow a \boxminus b,
+\end{align*}
+
+
+Thus, every operation can be uniquely reversed, allowing the
+original four 32-bit words to be recovered from the output.
+Therefore, $QR$ is invertible.
+
+\bigskip
+
+(b) According to slide 2.38, ChaCha20 encrypts plaintext
+by XORing it with the keystream.
+
+Let $S'$ be the state obtained after applying the ChaCha20 rounds.
+In standard ChaCha20, the keystream is computed as
+\[
+C_{\mathrm{stream}} = S \boxplus S'.
+\]
+In the modified scheme, the final addition is removed, so
+$C_{\mathrm{stream}} = S.$
+
+Under a known-plaintext attack, the adversary knows a plaintext
+block $P$ and its corresponding ciphertext $C$. Since
+$C = P \oplus C_{\mathrm{stream}}$, the adversary can recover
+the initial state:
+\[
+S = C_{\mathrm{stream}} = P \oplus C.
+\]
+
+Since $S$ contains the 256-bit secret key, the adversary can
+recover the key directly. Therefore, the modified scheme is
+totally insecure under a known-plaintext attack.
 \end{loigiai}
