@@ -1,0 +1,16 @@
+\begin{problem}{\bf CBC encryption} (5 points)\\
+Recall that AES is a block cipher with plaintext and ciphertext blocks
+of length 128 bits, and key space $\{0,1\}^{128}$. Plaintext messages
+$m$ that are longer than 128 bits are broken into blocks:
+$m = (m_1,m_2,\ldots,m_t)$ where each block $m_i$ is 128 bits long.
+In the CBC mode of operation, $m$ is encrypted by first selecting
+$c_0 \in_R \{0,1\}^{128}$ and then computing
+$c_i = \mbox{AES}_k(m_i \oplus c_{i-1})$ for $1 \leq i \leq t$;
+the ciphertext is $c=(c_0,c_1,c_2,\ldots,c_t)$.
+(Note that a new $c_0$ is selected each time a message is encrypted.)\\
+Show that CBC encryption is \emph{not} semantically secure against
+a \emph{chosen-ciphertext attack}.
+\end{problem}
+
+\begin{loigiai}
+\end{loigiai}

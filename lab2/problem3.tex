@@ -1,0 +1,15 @@
+\begin{problem}{\bf Hash functions} (10 points)\\
+Let $H$ be an iterated hash function with compression function
+$f : \{0,1\}^{n+r} \rightarrow \{0,1\}^n$. (See slide~3.30 for a complete
+description of an iterated hash function.) Suppose that you are
+given an algorithm ${\cal A}$ which, on input $z \in \{0,1\}^n$, finds
+$s,t \in \{0,1\}^r$, $s \neq t$, such that $f(z,s)=f(z,t)$.
+Suppose that the running time of ${\cal A}$ is $T$. Let $d$ be a positive
+integer, and let $D=2^d$. Show how ${\cal A}$ can be used to find, in time
+approximately $d T$ (not including the time to write down the messages),
+$D$ pairwise distinct messages $m_0,m_1,\ldots,m_{D-1}$ such that
+$H(m_0)=H(m_1)=\cdots=H(m_{D-1})$.
+\end{problem}
+
+\begin{loigiai}
+\end{loigiai}
