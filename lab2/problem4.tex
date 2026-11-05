@@ -6,4 +6,83 @@ Is this MAC scheme secure?  (Justify your answer.)
 \end{problem}
 
 \begin{loigiai}
+The proposed MAC scheme is \textbf{not secure} against
+chosen-message attacks. We construct an adversary that
+produces a valid forgery using only three MAC queries.
+
+Let $a,a',b \in \{0,1\}^n$, where $a \neq a'$.
+The adversary performs the following steps:
+
+\begin{enumerate}
+    \item Query the MAC oracle on the one-block message $a$
+    and obtain
+    \[
+        t = \mathrm{MAC}_{k,s}(a)
+          = E_k(a) \oplus s.
+    \]
+
+    \item Query the MAC oracle on the one-block message $a'$
+    and obtain
+    \[
+        t' = \mathrm{MAC}_{k,s}(a')
+           = E_k(a') \oplus s.
+    \]
+
+    \item Construct the two-block message
+    \[
+        x = (a, t \oplus b)
+    \]
+    and query the MAC oracle to obtain its tag $u$.
+
+    \item Output the forgery
+    \[
+        \boxed{(x^*,u), \quad x^*=(a',t'\oplus b).}
+    \]
+\end{enumerate}
+
+\textbf{Correctness.}
+
+By the definition of CBC-MAC for a two-block message,
+\[
+\begin{aligned}
+u
+&= \mathrm{MAC}_{k,s}(a,t\oplus b)\\
+&= E_k(E_k(a)\oplus t\oplus b)\oplus s\\
+&= E_k(E_k(a)\oplus E_k(a)\oplus s\oplus b)
+   \oplus s\\
+&= E_k(s\oplus b)\oplus s.
+\end{aligned}
+\]
+
+Now consider the forged message $x^*=(a',t'\oplus b)$.
+Its correct MAC tag is
+\[
+\begin{aligned}
+\mathrm{MAC}_{k,s}(x^*)
+&= E_k(E_k(a')\oplus t'\oplus b)\oplus s\\
+&= E_k(E_k(a')\oplus E_k(a')\oplus s\oplus b)
+   \oplus s\\
+&= E_k(s\oplus b)\oplus s\\
+&= u.
+\end{aligned}
+\]
+
+Therefore, the forged pair $(x^*,u)$ is valid.
+
+Furthermore, $x^*$ was never queried to the MAC oracle:
+the first two queries were one-block messages, while the
+third query was $(a,t\oplus b)$, which differs from $x^*$
+because $a\neq a'$.
+
+Thus, the adversary produces a valid forgery for a new
+message with probability $1$, using only three
+chosen-message queries.
+
+\[
+\boxed{\text{The proposed MAC scheme is not EUF-CMA secure.}}
+\]
+
+The vulnerability arises because XORing the CBC-MAC output
+with a fixed secret key $s$ does not prevent the algebraic
+cancellation exploited in the attack.
 \end{loigiai}
