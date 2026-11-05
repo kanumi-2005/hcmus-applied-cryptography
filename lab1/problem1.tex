@@ -37,4 +37,100 @@ Here is a toy example with $n=5$:
 \end{problem}
 
 \begin{loigiai}
+
+Let $E(m)=mA+b$, where $A\in\mathbb{F}_2^{n\times n}$
+is invertible and $b,m\in\mathbb{F}_2^{1\times n}$.
+All operations are performed over $\mathbb{F}_2$.
+
+\begin{enumerate}[label=(\alph*)]
+\item
+
+For a ciphertext $c=E(m)$, we have \(c=mA+b\).
+
+
+So subtracting $b$ and then multiplying on the right by $A^{-1}$ gives
+\(
+(c-b)A^{-1}=mAA^{-1}=m.
+\)
+
+
+As $-b=b$ over $\mathbb{F}_2$, we obtain
+\[
+\boxed{D(c)=(c+b)A^{-1}.}
+\]
+
+\item
+
+Let $0$ denote the all-zero vector. Then \(E(0)=0A+b=b\).
+Hence, $b$ can be recovered with one encryption query.
+
+Let $e_i$ be the $i$-th standard basis vector
+of $\mathbb{F}_2^n$. For each $i=1,\ldots,n$,
+\[
+E(e_i)=e_iA+b.
+\]
+Therefore,
+\[
+e_iA=E(e_i)+b.
+\]
+Since $e_iA$ is the $i$-th row of $A$, we have
+\[
+\boxed{A_{i,*}=E(e_i)+E(0).}
+\]
+Thus, all $n$ rows of $A$ can be recovered using
+$n$ additional encryption queries.
+
+Consequently, the entire secret key $(A,b)$
+can be recovered using \({n+1}\)
+chosen-plaintext queries.
+
+\item
+
+Let $e_1,e_2$ be two distinct
+standard basis vectors of $\mathbb{F}_2^n$.
+
+For any challenge ciphertext $c$, define
+\(c_1=c+e_1\), \(c_2=c+e_2\), \(c_3=c+e_1+e_2\)
+
+Since $e_1$, $e_2$, and $e_1+e_2$ are nonzero
+and pairwise distinct, $c_1,c_2,c_3$ are
+pairwise distinct and none equals $c$.
+
+Moreover,
+\[
+\begin{aligned}
+c_1+c_2+c_3
+&=(c+e_1)+(c+e_2)+(c+e_1+e_2)\\
+&=3c+2e_1+2e_2\\
+&=c.
+\end{aligned}
+\]
+
+By querying the decryption oracle on
+$c_1,c_2,c_3$, we obtain
+\[
+\begin{aligned}
+D(c_1)+D(c_2)+D(c_3)
+&=(c_1+b)A^{-1}
+ +(c_2+b)A^{-1}
+ +(c_3+b)A^{-1}\\
+&=(c_1+c_2+c_3+3b)A^{-1}\\
+&=(c+b)A^{-1}\\
+&=D(c),
+\end{aligned}
+\]
+where $2x=0$ and $3x=x$ over $\mathbb{F}_2$.
+
+Therefore,
+\[
+\boxed{D(c)=D(c_1)+D(c_2)+D(c_3).}
+\]
+
+Hence, the plaintext corresponding to $c$
+can be recovered using only three
+chosen-ciphertext queries, none of which
+is the challenge ciphertext itself.
+
+\end{enumerate}
+
 \end{loigiai}
