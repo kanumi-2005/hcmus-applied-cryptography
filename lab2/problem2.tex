@@ -1,7 +1,7 @@
 \begin{problem}{\bf Composing a hash function with itself} (10 points)\\
 Let $H: \{0,1\}^* \rightarrow \{0,1\}^n$ be a hash function. Define a new
 hash function $G : \{0,1\}^* \rightarrow \{0,1\}^n$ by $G(x) = H(H(x))$.
-\begin{enumerate}
+\begin{enumerate}[label=(\alph*)]
 \item Prove that if $H$ is collision resistant, then $G$ is also collision
 resistant.
 \item Prove that if $H$ is preimage resistant, then $G$ is also preimage
@@ -12,4 +12,17 @@ contrapositive statements.)
 \end{problem}
 
 \begin{loigiai}
+  \begin{enumerate}[label=(\alph*)]
+    \item Giả sử $G$ không phải là CR, ta chứng minh $H$ cũng không phải là CR. Thật vậy, vì $G$ không phải CR nên ta
+      tính được khả thi (với non-negligible success probability) $x$, $x'$ thuộc $\{0, 1\}^\ast$ và $x\ne x'$ sao cho
+      $G(x) = G(x')$ hay $H(H(x)) = H(H(x'))$.
+      \begin{itemize}
+        \item Trường hợp $H(x) = H(x')$ thì $x$ và $x'$ là collision cho $H$.
+        \item Trường hợp $H(x) \ne H(x')$ thì $H(x)$ và $H(x')$ là collision cho $H$.
+      \end{itemize} Do vậy $H$ không phải là CR.
+    \item Giả sử $G$ không phải là PR, ta chứng minh $H$ cũng không phải là PR. Thật vậy, vì $G$ không phải là PR nên
+      với $y \in \{0, 1\}^n$ cho trước, ta tính được khả thi (với non-negligible success probability) $x \in \{0,
+      1\}^\ast$ sao cho $G(x) = y$ hay $H(H(x)) = y$. Khi đó $H(x)$ là tiền ảnh của $y$ đối với $H$. Vậy $H$ không phải
+      là PR.
+  \end{enumerate}
 \end{loigiai}
