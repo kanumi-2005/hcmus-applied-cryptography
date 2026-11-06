@@ -13,4 +13,47 @@ a \emph{chosen-ciphertext attack}.
 \end{problem}
 
 \begin{loigiai}
+Ta đi xây dựng attacker $A$ phân biệt hai plaintext $m_0,m_1$ với xác suất đoán đúng lớn hơn $1/2$.
+
+\textbf{Input:} Attacker nhận challenge ciphertext $c^*=(c_0,c_1)$, trong đó:
+$$c_1=AES_k(m_b\oplus c_0),\quad b\in{0,1}.$$
+
+\textbf{Output:} Attacker dự đoán $b’\in{0,1}$ sao cho $b’=b$.
+
+\textbf{Ý tưởng:} Thay đổi IV của challenge ciphertext rồi gửi ciphertext mới đến decryption oracle để khôi phục plaintext ban đầu.
+
+\textbf{Bước 1: Chọn plaintext.}
+
+$$m_0=0^{128},\qquad m_1=1^{128}.$$
+
+\textbf{Bước 2: Nhận challenge ciphertext.}
+
+Challenger chọn ngẫu nhiên $b\in{0,1}$ và trả về:
+$$c^*=(c_0,c_1),\quad c_1=AES_k(m_b\oplus c_0).$$
+
+\textbf{Bước 3: Thay đổi IV.}
+
+Chọn $\Delta\neq 0^{128}$ và tạo:
+$$c’=(c_0\oplus\Delta,c_1).$$
+
+Vì $c’\neq c^*$, attacker được phép truy vấn decryption oracle.
+
+\textbf{Bước 4: Truy vấn decryption oracle.}
+
+Theo công thức giải mã CBC, oracle trả về:
+$$
+\begin{aligned}
+m’&=AES_k^{-1}(c_1)\oplus(c_0\oplus\Delta)=(m_b\oplus c_0)\oplus(c_0\oplus\Delta)=m_b\oplus\Delta.
+\end{aligned}
+$$
+
+\textbf{Bước 5: Khôi phục plaintext.}
+
+Attacker tính:
+$$m’\oplus\Delta=m_b.$$
+
+So sánh kết quả với $m_0,m_1$ để xác định $b$. Do đó:
+$$\Pr[b’=b]=1.$$
+
+\textbf{Kết luận:} CBC encryption không an toàn IND-CCA vì attacker có thể khôi phục chính xác plaintext chỉ bằng một lần truy vấn decryption oracle.
 \end{loigiai}
