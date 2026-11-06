@@ -12,4 +12,19 @@ $H(m_0)=H(m_1)=\cdots=H(m_{D-1})$.
 \end{problem}
 
 \begin{loigiai}
+  Đặt $H_0 = IV \in \{0, 1\}^n$. Với mỗi $i = 0$,~$1$, $\ldots\,$,~$d-1$, vì $H_i \in \{0, 1\}^n$ nên sử dụng thuật toán
+  $\mathcal{A}$ ta tìm được $z_{i + 1, 1}$ và $z_{i + 1, 2}$ thuộc $\{0, 1\}^r$ phân biệt sao cho $H_{i + 1} = f(H_i,
+  z_{i+1, 1}) = f(H_i, z_{i + 1, 2})$ và $H_{i + 1} \in \{0, 1\}^n$. Lúc này, ta thực hiện $\mathcal{A}$ $d$ lần.
+
+  Từ đó, ta có thể xây dựng tập các message như sau: \begin{equation*}
+    M = \{ z_1\Vert z_2\Vert \dotso\Vert z_{d} \in \{0, 1\}^{dr}\colon z_i \in \{z_{i, 1}, z_{i, 2}\}, \forall i
+    \in [d]\},
+  \end{equation*}trong đó kí hiệu $[n] = \{1, 2, \dotsc, n\}$ với $n \in \mathbb{Z}^+$. Do các $z_{i, 1}$ và $z_{i, 2}$
+  đều có bitlength là $r$ và phân biệt với mọi $i \in [d]$ nên $\lvert M \rvert = 2^{d}$ và các phần tử đều có cùng
+  bitlength là $dr$. Gọi $m_0, m_1, \dotsc, m_{D-1}$ là các phần tử của của $M$. Theo cách chọn $z_{i, \ast}$ như trên,
+  với $i$ và $j$ là chỉ số bất kì, các chaining variables ($H^{(m_i)}_k$ và $H^{(m_j)}_k$) khi tính $H(m_i)$ và $H(m_j)$
+  tương ứng bằng nhau.
+
+  Vậy $H(m_0) = H(m_1) = \dotsb = H(m_{D - 1})$. Và do thực hiện thuật toán $\mathcal{A}$ $d$ lần nên thời gian chạy là
+  $dT$.
 \end{loigiai}
