@@ -1,0 +1,47 @@
+\begin{problem}{\bf Computing GCDs without long division} (10 points)\\
+One of the drawbacks of the Euclidean algorithm is that it requires
+long divisions which can be difficult to implement in software and
+hardware. The following algorithm for computing greatest common divisors
+only uses divisions by 2, an operation which can be easily implemented
+as a right-shift of the binary representation.
+\begin{itemize}
+\itemsep 0mm
+\item[] {\bf Algorithm: GCDNoDivision}
+\item[] Input: Positive integers $a$, $b$.
+\item[] Output: $\gcd(a,b)$.
+\begin{enumerate}
+\itemsep 0mm
+\item[(i)] $e \leftarrow 1$.
+\item[(ii)] While $a$ and $b$ are both even do\\
+      \hspace*{10mm} $a \leftarrow a/2$,
+                     $\;\;\;\;b \leftarrow b/2$,
+                     $\;\;\;\;e \leftarrow 2e$.
+\item[(iii)] While $a \neq 0$ do\\
+      \hspace*{10mm}While $a$ is even do: $a \leftarrow a/2$.\\
+      \hspace*{10mm}While $b$ is even do: $b \leftarrow b/2$.\\
+      \hspace*{10mm}If $a \geq b$ then\\
+      \hspace*{20mm}$a \leftarrow a-b$\\
+      \hspace*{10mm}else\\
+      \hspace*{20mm}$b \leftarrow b-a$
+\item[(iv)] $d \leftarrow e \cdot b$.
+\item[(v)] RETURN($d$).
+\end{enumerate}
+\end{itemize}
+\begin{enumerate}
+\item Compute $\gcd(1326,1716)$ using GCDNoDivision.
+(Show the main steps of your
+work.)
+\item Prove that GCDNoDivision \emph{terminates}.
+\item Prove that GCDNoDivision is \emph{correct} (that is, $d=\gcd(a,b)$).\\
+      You may use the following result without proof:
+      $\gcd(a,b)=\gcd(a,b-a)$ for all integers $a$, $b$.
+\item Determine the running time of GCDNoDivision in bit operations.
+      The running time should be expressed in terms of $k$, where $k$
+      is the bitlength of the larger of $a$ and $b$. (Justify your answer.)\\
+      \underline{Hint}: Consider the binary representations of $a$ and $b$.
+\item Is GCDNoDivision a polynomial-time algorithm? (Justify your answer.)
+\end{enumerate}
+\end{problem}
+
+\begin{loigiai}
+\end{loigiai}

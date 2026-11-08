@@ -1,0 +1,40 @@
+\begin{problem}{\bf An attack on an implementation of MAC schemes} (10 points)\\
+Let $\mbox{MAC}$ denote a deterministic MAC scheme such as HMAC with
+256-bit keys $k$ and 256-bit tags $t$. (``Deterministic'' means that no
+random bits are used when computing the tag of a message.) Consider
+the following tag verification algorithm.
+
+\vspace*{3mm}
+\noindent
+\underline{INPUT}: A message $m$, a tag $t \in \{0,1\}^{256}$, and a
+secret key $k \in \{0,1\}^{256}$.\\
+\underline{OUTPUT}: ``Accept'' or ``Reject''.
+
+\vspace*{1mm}
+\noindent
+Compute $t'=\mbox{MAC}_k(m)$.\\
+For $i$ from 1 to 256 do:\\
+\hspace*{10mm}If the $i$th bit of $t$ is different from the $i$th bit
+of $t'$ then:\\
+\hspace*{20mm}Output ``Reject'' and stop.\\
+Output ``Accept''.
+
+\vspace*{4mm}
+\noindent
+\begin{enumerate}
+\item Suppose now that you have access to a \emph{MAC verification oracle};
+such an oracle executes the tag verification algorithm described
+above when presented with a message-tag pair (the oracle uses its own
+secret key $k$) and returns ``Accept''
+or ``Reject''. Suppose also that you can obtain very precise
+measurements of the time that the MAC verification oracle takes.
+Describe an efficient attack that computes the tag of a message $m$
+that is given to you. (Of course, you do not know the secret key $k$.
+You also do not have access to a MAC generation oracle.)
+\item Propose a modification to the tag verification algorithm that
+defeats the attack.
+\end{enumerate}
+\end{problem}
+
+\begin{loigiai}
+\end{loigiai}
