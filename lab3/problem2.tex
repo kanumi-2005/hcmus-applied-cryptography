@@ -47,7 +47,7 @@ defeats the attack.
 \KwIn{Message $m$}
 \KwOut{Tag $t$ của $m$}
 \BlankLine
-$t \gets \emptyset$\tcp{Khởi tạo $t$ là chuỗi bit rỗng}\;
+$t \gets \emptyset$\tcp{Khởi tạo $t$ là chuỗi bit rỗng}
 \BlankLine
 \For(\tcp*[h]{Thử từng bit của $t$}){$i$ from $0$ to $255$}{
   $r_1, t_1 \gets \texttt{MAC\_verification}(m, t\Vert 0\Vert 0^{255 - i})$\tcp{$r_1$ và $t_1$ tương ứng kết quả và thời
