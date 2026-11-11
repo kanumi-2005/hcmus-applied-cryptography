@@ -21,7 +21,7 @@ Output ``Accept''.
 
 \vspace*{4mm}
 \noindent
-\begin{enumerate}
+\begin{enumerate}[label=(\alph*)]
 \item Suppose now that you have access to a \emph{MAC verification oracle};
 such an oracle executes the tag verification algorithm described
 above when presented with a message-tag pair (the oracle uses its own
@@ -37,4 +37,41 @@ defeats the attack.
 \end{problem}
 
 \begin{loigiai}
+\begin{enumerate}[label=(\alph*)]
+\item Vì ta đo chính xác thời gian chạy của MAC verification nên ứng với thời gian chạy lâu hơn thì số bit đúng tính từ
+đầu của tag nhiều hơn. Ta thực hiện tính tag của message $m$ như sau:
+
+\begin{minipage}{\linewidth}
+\begin{algorithm}[H]
+\caption{Tấn công với MAC verification oracle}
+\KwIn{Message $m$}
+\KwOut{Tag $t$ của $m$}
+\BlankLine
+$t \gets \emptyset$\tcp{Khởi tạo $t$ là chuỗi bit rỗng}\;
+\BlankLine
+\For(\tcp*[h]{Thử từng bit của $t$}){$i$ from $0$ to $255$}{
+  $r_1, t_1 \gets \texttt{MAC\_verification}(m, t\Vert 0\Vert 0^{255 - i})$\tcp{$r_1$ và $t_1$ tương ứng kết quả và thời
+  gian chạy của $\mathtt{MAC\_verification}$}
+  \lIf{$r_1 = \mathrm{Accept}$}{\Return{$t$}}
+  \BlankLine
+  $r_2, t_2 \gets \texttt{MAC\_verification}(m, t\Vert 1\Vert 0^{255 - i})$\;
+  \lIf{$r_2 = \mathrm{Accept}$}{\Return{$t$}}
+  \BlankLine
+  \If{$t_1 > t_2$}{
+    $t\gets t\Vert 0$\;
+  }\Else{
+    $t\gets t\Vert 1$\;
+  }
+
+}
+\end{algorithm}
+\end{minipage}
+
+Dễ thấy rằng, sau lần lặp thứ $i$ thì $t$ chứa $i$ bit đầu của $\mathop{MAC}_k(m) \in \{0, 1\}^{256}$. Do vậy thuật toán
+trên dừng và đúng. Thuật toán trên hiệu quả vì nó thực hiện tối đa $2\cdot 256$ lần truy vấn MAC verification.
+
+\item Để chống lại cách tấn công trên, thay vì trả về ``Reject'' trong vòng lặp, ta lưu kết quả vào một biến và trả
+về nó sau khi thực hiện tất cả vòng lặp. Điều này làm cho thời gian chạy của MAC verification là giống nhau với mọi
+tag $t$. Do đó, thuật toán trên không biết được số bit đúng của~$t$.
+\end{enumerate}
 \end{loigiai}
