@@ -8,4 +8,79 @@ your algorithm takes.
 \end{problem}
 
 \begin{loigiai}
+Let \(
+k=\lfloor \log_2 n\rfloor+1
+\)
+be the bit length of the input.  We perform a binary search over all
+possible values of the root.  The exponentiation in each iteration is
+computed by repeated square-and-multiply.
+
+\begingroup
+\SetAlgorithmName{Algorithm}{Algorithm}{List of Algorithms}
+\begin{algorithm}[H]
+\caption{Testing whether $n$ is a 2026th power}
+\KwIn{An integer $n\geq 1$}
+\KwOut{\textsc{True} if $n=a^{2026}$ for some $a\in\NN$;
+       \textsc{False} otherwise}
+
+\Fn{\textsc{Power}$(x,e)$}{
+    $r\gets 1$\;
+    $b\gets x$\;
+    \While{$e>0$}{
+        \If{$e$ is odd}{
+            $r\gets r\cdot b$\;
+        }
+        $b\gets b\cdot b$\;
+        $e\gets \lfloor e/2\rfloor$\;
+    }
+    \KwRet{$r$}\;
+}
+
+$low\gets 1$\;
+$high\gets n$\;
+\While{$low\leq high$}{
+    $mid\gets \left\lfloor (low+high)/2\right\rfloor$\;
+    $p\gets \textsc{Power}(mid,2026)$\;
+    \eIf{$p=n$}{
+        \KwRet{\textsc{True}}\;
+    }{
+        \eIf{$p<n$}{
+            $low\gets mid+1$\;
+        }{
+            $high\gets mid-1$\;
+        }
+    }
+}
+\KwRet{\textsc{False}}\;
+\end{algorithm}
+\endgroup
+
+\textbf{Correctness.}
+The procedure \textsc{Power} computes $x^e$ exactly by the usual
+square-and-multiply method.  Moreover, the function
+$f(a)=a^{2026}$ is strictly increasing on the positive integers.
+At the beginning of every binary-search iteration, if a positive
+integer $a$ satisfying $a^{2026}=n$ exists, then $a$ lies in the
+current interval $[low,high]$.  This is true initially because
+$1\leq a\leq n$.  If $mid^{2026}<n$, strict monotonicity implies
+$a>mid$, so discarding the left half preserves the invariant.
+Similarly, if $mid^{2026}>n$, then $a<mid$, so discarding the right
+half also preserves the invariant.  If equality holds, the algorithm
+correctly returns \textsc{True}.  Otherwise the interval eventually
+becomes empty, and the invariant then implies that no such integer
+$a$ exists; hence returning \textsc{False} is correct.
+
+\textbf{Running time.}
+Binary search performs $O(\log n)=O(k)$ iterations.  In one iteration,
+computing $mid^{2026}$ by square-and-multiply uses
+$O(\log 2026)=O(1)$ integer multiplications.  Every intermediate value
+has at most $2026k=O(k)$ bits.  Using elementary school multiplication,
+each multiplication therefore costs $O(k^2)$ bit operations.  The
+additions, comparisons, and divisions by two cost only $O(k)$ bit
+operations and do not change the bound.  Thus each iteration costs
+$O(k^2)$ bit operations, and the total running time is
+\[
+\boxed{T(k)=O(k)\cdot O(k^2)=O(k^3)}.
+\]
+Therefore, the algorithm runs in polynomial time in the input length.
 \end{loigiai}
