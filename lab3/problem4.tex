@@ -63,8 +63,8 @@ hữu hạn làm $a = 0$ và (iii) kết thúc. Do đó GCDNoDivision dừng sau
 [k]$) là các số nguyên không âm và $p_1 = 2$. Khi đó \begin{equation*}
   \gcd(a, b) = p_1^{\min(e_1,f_1)}\cdot p_2^{\min(e_2,f_2)}\dotsm p_k^{\min(e_k,f_k)}.
 \end{equation*} Sau bước (ii), ta có $e = p_1^{\min(e_1, f_1)}$ và \begin{align*}
-  a &= p_2^{e_2}\dotsm p_k^{e_k},\\
-  b &= p_2^{f_2}\dotsm p_k^{f_k}.
+  a &= p_1^{e_1 - e}p_2^{e_2}\dotsm p_k^{e_k},\\
+  b &= p_1^{f_1 - e}p_2^{f_2}\dotsm p_k^{f_k}.
 \end{align*} Nhận xét rằng nếu $\gcd(a, b)$ lẻ thì $\gcd(a/2, b) = \gcd(a, b)$ nếu $a$ chẵn. Do đó hai vòng lặp con trong
 (iii) vẫn giữ tính đúng khi tính $\gcd(a, b)$. Bước ``if'' trong (iii) sử dụng tính chất $\gcd(a, b) = \gcd(a, b -
 a)$ nếu $b > a$ và $\gcd(a, b) = \gcd(a - b, b)$ nếu $a\ge b$. Trước khi thoát vòng lặp, vì $a = 0$ nên $\gcd(a, b) =
