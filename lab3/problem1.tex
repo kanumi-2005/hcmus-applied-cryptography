@@ -8,4 +8,14 @@ compute a valid ciphertext/tag for $(A',M')$.\\
 \end{problem}
 
 \begin{loigiai}
+Theo chế độ CTR, AES-GCM mã hóa từng khối theo công thức $C_i=AES_K(J_i)\oplus M_i$. Vì adversary biết $M$ và $C$, họ có thể khôi phục $AES_K(J_i)=C_i\oplus M_i$. Do $u'\leq u$, adversary có thể sử dụng lại các giá trị này để tạo ciphertext mới $C'_i=AES_K(J_i)\oplus M'_i=C_i\oplus M_i\oplus M'_i$.
+
+Mặt khác, authentication tag của AES-GCM được tính bởi $t=AES_K(J_0)\oplus f_{A,C}(H)$. Vì biết $H$, adversary có thể tính $f_{A,C}(H)$ và suy ra $AES_K(J_0)=t\oplus f_{A,C}(H)$. Do đó, tag mới tương ứng với $(A',C')$ được tính bởi:
+\[
+\begin{aligned}
+t'&=AES_K(J_0)\oplus f_{A',C'}(H)\\
+&=t\oplus f_{A,C}(H)\oplus f_{A',C'}(H).
+\end{aligned}
+\]
+Vậy adversary có thể tạo ciphertext/tag hợp lệ mới $(IV,A',C',t')$ tương ứng với $(A',M')$ mà không cần biết khóa AES $K$. Điều này cho thấy việc giữ bí mật $H$ rất quan trọng để đảm bảo tính toàn vẹn của AES-GCM.
 \end{loigiai}
