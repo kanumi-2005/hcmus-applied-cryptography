@@ -27,7 +27,7 @@ as a right-shift of the binary representation.
 \item[(v)] RETURN($d$).
 \end{enumerate}
 \end{itemize}
-\begin{enumerate}
+\begin{enumerate}[label=(\alph*)]
 \item Compute $\gcd(1326,1716)$ using GCDNoDivision.
 (Show the main steps of your
 work.)
@@ -44,4 +44,46 @@ work.)
 \end{problem}
 
 \begin{loigiai}
+\begin{enumerate}[label=(\alph*)]
+\item Ta có $1326  = 2\cdot 3 \cdot 13 \cdot 17$ và $1716 = 2^2 \cdot 3 \cdot 11 \cdot 13$. Sau bước (ii) thì $e = 2$,
+$a = 3\cdot 13 \cdot 17$ và $b = 2\cdot 3 \cdot 11 \cdot 13$. Ở vòng lặp đầu tiên của (iii), $a$ giữ nguyên, $b = 3\cdot
+11 \cdot 13$, vì $a\ge b$ nên $a \gets a - b = 234 = 2\cdot 3^2 \cdot 13$. Ở vòng lặp thứ hai của (iii), $a = 3^2\cdot
+13$, $b$ giữ nguyên, vì $b > a$ nên $b \gets b - a = 312 = 2^3 \cdot 3 \cdot 13$. Ở vòng lặp thứ ba của (iii), $a$ giữ
+nguyên, $b = 3\cdot 13$, vì $a\ge b$ nên $a \gets a - b = 2 \cdot 3 \cdot 13$. Ở vòng lặp thứ tư của (iii), $a= 3\cdot
+13$, $b = 3\cdot 13$, vì $a\ge b$ nên $a\gets a - b = 0$. Bước (iii) xong, sang bước (iv), $d \gets 2\cdot 3 \cdot 13$.
+Bước (v) trả về $d$.
+\item Để chứng minh GCDNoDivision dừng sau hữu hạn bước, ta chứng minh (ii) và(iii) lặp hữu hạn lần. Dễ thấy rằng (ii)
+thực hiện hữu hạn lần. Nhận thấy rằng $b$ luôn lớn hơn $0$ và $a$ luôn không âm trong suốt quá trình thực hiện thuật
+toán. Do ở mỗi vòng lặp của (iii) thì $a$ hay $b$ sẽ giảm ít nhất 1. Mà $a$ nguyên dương nên tồn tại một vòng lặp
+hữu hạn làm $a = 0$ và (iii) kết thúc. Do đó GCDNoDivision dừng sau hữu hạn bước.
+\item Giả sử $a$ và $b$ có tích dạng thừa số nguyên tố là \begin{align*}
+  a &= p_1^{e_1}\cdot p_2^{e_2}\dotsm p_k^{e_k},\\
+  b &= p_1^{f_1}\cdot p_2^{f_2}\dotsm p_k^{f_k},
+\end{align*}với $p_i$ ($i = 1$, $2$, $\ldots\,$, $k$) là các số nguyên tố theo thứ tự tăng dần và $e_i$, $f_i$ ($i \in
+[k]$) là các số nguyên không âm và $p_1 = 2$. Khi đó \begin{equation*}
+  \gcd(a, b) = p_1^{\min(e_1,f_1)}\cdot p_2^{\min(e_2,f_2)}\dotsm p_k^{\min(e_k,f_k)}.
+\end{equation*} Sau bước (ii), ta có $e = p_1^{\min(e_1, f_1)}$ và \begin{align*}
+  a &= p_2^{e_2}\dotsm p_k^{e_k},\\
+  b &= p_2^{f_2}\dotsm p_k^{f_k}.
+\end{align*} Nhận xét rằng nếu $\gcd(a, b)$ lẻ thì $\gcd(a/2, b) = \gcd(a, b)$ nếu $a$ chẵn. Do đó hai vòng lặp con trong
+(iii) vẫn giữ tính đúng khi tính $\gcd(a, b)$. Bước ``if'' trong (iii) sử dụng tính chất $\gcd(a, b) = \gcd(a, b -
+a)$ nếu $b > a$ và $\gcd(a, b) = \gcd(a - b, b)$ nếu $a\ge b$. Trước khi thoát vòng lặp, vì $a = 0$ nên $\gcd(a, b) =
+b$. Do đó $b = p_2^{\min(e_2,f_2)}\dotsm p_k^{\min(e_k,f_k)}$. Kết hợp lại, ta được \begin{equation*}
+  e\cdot b =  p_1^{\min(e_1,f_1)}\cdot p_2^{\min(e_2,f_2)}\dotsm p_k^{\min(e_k,f_k)} = \gcd(a, b).
+\end{equation*}
+\item Với $k = \Bigl\lfloor \log_2\bigl(\max(a, b)\bigl)\Big\rfloor + 1$. Nhận xét rằng $a$ và $b$ chỉ có giảm chứ không
+tăng. Do đó số lần thực hiện tất cả mỗi các phép $a \gets a/2$ hay $b\gets b/2$ không quá $k$. Do đó số lần lặp của (ii)
+không quá $k$ lần. Lại để ý rằng, ở mỗi vòng lặp của (iii), sau hai vòng lặp con, $a$ và $b$ đều lẻ. Do đó, sau bước
+``if'',  một trong $a$ và $b$ phải chẵn, và một trong hai vòng lặp con của (iii) phải thực hiện ít nhất một lần ở vòng
+lặp sau. Do tổng số lần $a$ hay $b$ bị chia đôi không quá $2k$ nên số vòng lặp của (iii) không quá $2k + 1$ ($1$ là tính
+vòng lặp đầu). Vậy số bit operations được thực hiện không quá \begin{multline*}
+  \underbrace{\strut k}_{\text{Số lần thực hiện tối đa $a \gets a/2$}} + \underbrace{\strut k}_{\text{Số lần thực hiện
+  tối đa $b\gets b/2$}} + \underbrace{\strut k}_{\text{Số lần thực hiện tối đa $e \gets 2e$}}\\
+  + \underbrace{\strut c_1k}_\text{Phép trừ hai số $k$ bits} \cdot \underbrace{\strut (2k + 1)}_{\text{Số lần thực hiện
+  tối đa bước ``if''}} + \underbrace{\strut c_2k^2}_{\text{Phép nhân hai số $k$ bits $d\gets e\cdot b$}}\\
+  = (2c_1 + c_2)k^2 + (c_1 + 3)k
+\end{multline*}
+\item GCDNoDivision là polynomial-time algorithm vì số bit operations của thuật toán là $O\bigl((2c_1 + c_2)k^2 + (c_1 +
+  3)k\bigr) = O(k^2)$.
+\end{enumerate}
 \end{loigiai}
