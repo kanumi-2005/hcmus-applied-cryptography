@@ -1,0 +1,21 @@
+\begin{problem}{\bf RSA signatures \#1} (5 points)\\
+Consider the variant of the basic RSA signature scheme in which no hash
+function is used. That is, to sign a message $m$, where
+$0 \leq m \leq n-1$, Alice computes $s = m^d \bmod{n}$ and
+sends $(m,s)$ to Bob. (Here, $(n,e)$ is Alice's RSA public key,
+and $d$ is Alice's RSA private key.) To verify, Bob computes
+$m'=s^e \bmod n$ and checks that $m'=m$.
+\begin{enumerate}[label=(\alph*)]
+\item Show that this signature scheme is existentially forgeable
+      under a key-only attack.
+\item Show that this signature scheme can be \emph{totally broken}
+      under a chosen-message attack. In this attack, the adversary is
+      given the public key $(n,e)$, a target message $m \in [0,n-1]$,
+      and a signing oracle. The adversary can obtain the signatures
+      of any messages of her choosing from the oracle except for $m$
+      itself. Her goal is to determine the signature on $m$.
+\end{enumerate}
+\end{problem}
+
+\begin{loigiai}
+\end{loigiai}

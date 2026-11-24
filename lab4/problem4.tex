@@ -1,0 +1,51 @@
+\begin{problem}{\bf RSA signatures \#2} (10 points)\\
+Consider the following variant of the RSA signature scheme.
+
+\noindent
+{\bf Signature generation}. To sign a message $m \in \{0,1\}^*$, Alice does:
+\begin{enumerate}[label=(\alph*)]
+\item Compute $h = H(m)$, where $H$ is a hash function.
+\item Format $h$ to a string $M$ of $k$ bytes, where $k$ is the bytelength of
+Alice's RSA modulus $n$:\\
+\hspace*{10mm}The leftmost byte is \texttt{0x00}.\\
+\hspace*{10mm}The next byte is \texttt{0x80} (the version number).\\
+\hspace*{10mm}The next bytes are a string of at least 32 \texttt{0x00}
+   bytes.\\
+\hspace*{10mm}The next bytes are a string of at least 32 \texttt{0xAA}
+   bytes.\\
+\hspace*{10mm}The next byte is a \texttt{0xFF} byte.\\
+\hspace*{10mm}The next 16 bytes are an encoding of the name of the
+   hash function $H$.\\
+\hspace*{10mm}The remaining bytes are the hash value $h$.
+\item Compute $s = M^d \bmod{n}$.
+\item Alice's signature on $m$ is $s$.
+\end{enumerate}
+
+\noindent
+{\bf Signature verification}. To verify $(m,s)$, Bob does:
+\begin{enumerate}[label=(\alph*)]
+\item Obtain an authentic copy of Alice's public key $(n,e)$.
+\item Compute $M = s^e \bmod{n}$, and write $M$ as a byte string of length $k$.
+\item Check the formatting (if any check fails, then reject the signed
+message):\\
+\hspace*{10mm}The leftmost byte is \texttt{0x00}.\\
+\hspace*{10mm}The next byte is \texttt{0x80} (the version number).\\
+\hspace*{10mm}The next bytes are a string of at least 32 \texttt{0x00} bytes.\\
+\hspace*{10mm}The next bytes are a string of at least 32 \texttt{0xAA} bytes.\\
+\hspace*{10mm}The next byte is a \texttt{0xFF} byte.
+\item From the next 16 bytes, extract the name of the hash function $H$;
+suppose that $H$-values are $\ell$ bytes in length.
+\item Let $h$ be the next $\ell$ bytes of $M$.
+\item Compute $h' = H(m)$.
+\item Accept iff $h=h'$.
+\end{enumerate}
+
+Suppose now that Alice is using a 15360-bit modulus $n$, $e=7$, and
+$H=\mbox{SHA512}$. Show how an adversary can, for an arbitrary message
+$m$ of her choosing, efficiently compute a signature $s'$ for $m$ (or
+a slight variant of $m$) such that Bob will accept $(m,s')$ as Alice's
+signed message.
+\end{problem}
+
+\begin{loigiai}
+\end{loigiai}

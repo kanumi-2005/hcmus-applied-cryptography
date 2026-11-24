@@ -1,0 +1,44 @@
+\begin{problem}{\bf Restricted chosen-ciphertext attack on RSA encryption}
+(10 points)\\
+Consider the following encryption scheme.
+\begin{enumerate}
+\item[I.] To encrypt a plaintext $m$, the client does the following:
+\begin{enumerate}[label=\roman*.]
+\item Randomly generate a 128-bit AES session key $k$.
+\item Encrypt $k$ with the server's RSA public key $(n,e)$:
+$c_1 = k^e \bmod{n}$.\\ Here, $e=65537$ and $n$ is a 3072-bit RSA modulus.
+\item Encrypt $m$: $c_2 = \mbox{AES-GCM}_k(m)$.
+\item Send $(c_1,c_2)$ to the server.
+\end{enumerate}
+\item[II.] The server does the following:
+\begin{enumerate}[label=\roman*.]
+\item Decrypt $c_1$ using its RSA private key $d$: $K = c_1^d \bmod{n}$.\\
+      Write $K$ as a 3072-bit integer (perhaps with some leading 0 bits),
+      and let $k'$ be the integer formed from the 128 \emph{least significant}
+      (i.e., the rightmost) bits of $K$.
+\item Decrypt $c_2$: $m = \mbox{AES-GCM}^{-1}_{k'}(c_2)$.
+\item If $m$ is accepted by the AES-GCM authentication mechanism, then
+      send a response ``OK''. If $m$ is rejected by the AES-GCM authentication
+      mechanism, then don't respond.
+\end{enumerate}
+\end{enumerate}
+
+\begin{enumerate}[label=(\alph*)]
+\item Let $k=k_{127}k_{126}\cdots k_2k_1k_0$ in step~I.ii,
+where $k_i \in \{0,1\}$, and let $c_1 = k^e \bmod{n}$.
+Let $\hat{c}_1 = c_1 2^{127e} \bmod{n}$. What value $k'$ does the server
+obtain if it decrypts $\hat{c}_1$ in step~II.i?
+\item Suppose now that the adversary captures a ciphertext $(c_1,c_2)$.
+The adversary can send any ciphertexts $(\hat{c}_1,\hat{c}_2)$ of
+her choosing to the server. For each such ciphertext, the server will
+either send a response or not, depending on whether $\hat{c}_2$ passes
+the AES-GCM authentication mechanism in step~II.iii.\\
+Show how the adversary can efficiently determine $k_0$ (with very high
+probability).
+\item Show how the adversary can, with very high probability, efficiently
+determine $m$, the plaintext corresponding to $c_2$.
+\end{enumerate}
+\end{problem}
+
+\begin{loigiai}
+\end{loigiai}
