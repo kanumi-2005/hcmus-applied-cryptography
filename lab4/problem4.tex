@@ -48,4 +48,39 @@ signed message.
 \end{problem}
 
 \begin{loigiai}
+Adversary thực hiện tấn công như sau: \begin{enumerate}[label=\roman*.]
+\item Chọn $m \in \{0, 1\}^\ast$ bất kì.
+\item Tính $h = H(m)$.
+\item Đặt $N$ là số nguyên 904 bit như sau: \begin{tabular}{|c|c|c|c|}
+\hline
+0xAA\times 32 & 0xFF & hash name & h \\
+\hline
+256 bit & 8 bit & 128 bit & 512 bit \\
+\hline
+\end{tabular}.
+\item Nếu $7 \nmid N$ thì thay đổi $m$ và thực hiện lại bước ii.
+\item Đặt $s = 2^{2193} + 4N/7$.
+\item Kết quả $(m, s)$.
+\end{enumerate} Ta có \begin{align*}
+s^e \bmod n &= (2^{2193} + 4N/7)^7 \bmod n,\\
+&= 2^{15351} + 2^{13158 + 2}\cdot N + \mathrm{garbage},\\
+&= \text{\begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    0x00 & 0x80 & 0x00\times 160 & 0xAA\times 32 & 0xFF & hash name & h & garbage\\
+    \hline
+    8 bit & 8 bit & 1280 bit & 256 bit & 8 bit & 128 bit & 512 bit & 13160 bit\\
+    \hline
+  \end{tabular}.}
+\end{align*}Giải thích: \begin{itemize}
+\item Ta có $(2^{2193} + 4N/7)^7 < 2^{2194 \cdot 7} = 2^{15358}$ nên có ít hơn 15359 bit và không cần lấy mod $n$.
+\item Các hạng tử trong garbage là $\binom{7}{k}2^{2193 \cdot k}\cdot(4N/7)^{7-k}$ với $k \in \{0, 1, 2, 3, 4, 5\}$. Ta
+có, $\binom{7}{k} \le 35$, $(4N/7) \le N \le 2^{904}$. Do đó \begin{align*}
+\mathrm{garbage} &\le \sum_{k = 0}^535 \cdot 2^{2193\cdot k} \cdot 2^{904 \cdot (7 - k)},\\
+&\le \sum_{k = 0}^5 35 \cdot 2^{2193k + 904\cdot 7 - 904k},\\
+&\le \sum_{k = 0}^5 35 \cdot 2^{1289k + 6328},\\
+&\le 6 \cdot 35 \cdot 2^{1289\cdot 5 + 6328},\\
+&\le 2^3 \cdot 2^6 \cdot 2^{12773},\\
+&\le 2^{12782}.
+\end{align*}
+\end{itemize}
 \end{loigiai}
