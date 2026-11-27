@@ -41,4 +41,179 @@ determine $m$, the plaintext corresponding to $c_2$.
 \end{problem}
 
 \begin{loigiai}
+
+{(a) Xác định giá trị $k’$ mà server thu được khi giải mã $\hat{c}_1$.}
+
+Đề bài cho ciphertext mới:
+$
+\hat{c}_1=c_1\cdot 2^{127e}\bmod n.
+$
+
+Do RSA có tính chất nhân, khi server giải mã $\hat{c}_1$ bằng khóa bí mật $d$, ta thu được:
+
+$$
+\begin{aligned}
+K
+&=\hat{c}_1^d\bmod n\
+&=(c_1\cdot 2^{127e})^d\bmod n\
+&=c_1^d\cdot 2^{127ed}\bmod n\
+&=k\cdot 2^{127}\bmod n.
+\end{aligned}
+$$
+
+vì $c_1^d\equiv k\pmod n$ và $ed\equiv 1\pmod{\varphi(n)}$.
+
+Mặt khác, do $k$ là số nguyên 128-bit nên $k<2^{128}$, và phép tính modulo $n$ không làm thay đổi kết quả  Vì vậy:
+$
+k\cdot 2^{127}<2^{255}\ll n
+$
+, và
+$
+K=k\cdot 2^{127}.
+$
+
+Theo yêu cầu của server, $k’$ được lấy từ 128 bit thấp nhất của $K$. Ta có:
+
+$$
+\begin{aligned}
+k’
+&=(k\cdot 2^{127})\bmod 2^{128}\
+&=k_0\cdot 2^{127}.
+\end{aligned}
+$$
+
+% Giải thích cụ thể, khi nhân $k$ với $2^{127}$, toàn bộ các bit của $k$ được dịch sang trái 127 vị trí. Tuy nhiên, server chỉ giữ lại 128 bit thấp nhất, nên tất cả các bit ban đầu ngoại trừ bit thấp nhất $k_0$ đều bị loại bỏ.
+
+Vì vậy, giá trị khóa AES mà server sử dụng trong trường hợp này là:
+
+$$
+\boxed{
+k’=
+\begin{cases}
+000\cdots 000, & \text{nếu } k_0=0,\\
+100\cdots 000, & \text{nếu } k_0=1.
+\end{cases}
+}
+$$
+
+Như vậy, bằng cách thay đổi ciphertext RSA, ta đã biến khóa AES 128-bit ban đầu thành một trong hai khóa có thể xác định được, tùy thuộc vào giá trị của bit thấp nhất $k_0$.
+
+\bigskip
+
+{(b) Xác định bit $k_0$ bằng restricted chosen-ciphertext attack.}
+
+Từ câu (a), khi server giải mã $\hat{c}_1$, khóa AES thu được chỉ có thể là một trong hai giá trị:
+
+$$
+k’_0=0^{128},\qquad
+k’_1=10^{127}.
+$$
+
+Vì cả hai khóa đều đã biết, đối phương chọn một plaintext bất kỳ $m^*$ và nonce $N$, sau đó mã hóa bằng khóa $k’_0$ để tạo ciphertext hợp lệ:
+
+$$
+\hat{c}_2=\operatorname{AES\text{-}GCM}_{k’_0}(m^*;N).
+$$
+
+Tiếp theo, đối phương gửi $(\hat{c}_1,\hat{c}_2)$ đến server.
+
+Xét hai trường hợp:
+\begin{itemize}
+    
+
+\item  \textit{Trường hợp 1: $k_0=0$.}
+
+Theo câu (a), server thu được $k’=k’_0=0^{128}$. Vì $\hat{c}_2$ được mã hóa bằng đúng khóa này nên xác thực AES-GCM thành công và server phản hồi ``OK’’.
+
+\item  \textit{Trường hợp 2: $k_0=1$.}
+
+Server thu được $k’=k’_1=10^{127}$. Vì $\hat{c}_2$ được mã hóa bằng khóa $k’_0\neq k’_1$, xác thực AES-GCM thất bại với xác suất rất cao và server không phản hồi.
+\end{itemize}
+Do đó, đối phương có thể xác định $k_0$ dựa trên phản hồi của server:
+
+$$
+\boxed{
+k_0=
+\begin{cases}
+0, & \text{nếu server phản hồi OK},\\
+1, & \text{nếu server không phản hồi}.
+\end{cases}
+}
+$$
+
+Như vậy, chỉ với một truy vấn, đối phương có thể xác định bit thấp nhất $k_0$ với xác suất rất cao mà không cần biết khóa AES ban đầu.
+
+
+\bigskip
+
+{(c) Khôi phục plaintext $m$ với xác suất rất cao.}
+
+Từ câu (b), ta có thể mở rộng phương pháp để lần lượt khôi phục toàn bộ 128 bit của khóa AES $k$. Giả sử đối phương đã biết $i$ bit thấp nhất $k_0,k_1,\ldots,k_{i-1}$ và muốn xác định bit tiếp theo $k_i$.
+
+Đối phương tạo ciphertext RSA mới:
+
+$$
+\hat{c}_{1,i}=c_1\cdot 2^{(127-i)e}\bmod n.
+$$
+
+Khi server giải mã, ta thu được:
+$
+K_i=k\cdot 2^{127-i}.
+$
+
+Do server chỉ lấy 128 bit thấp nhất, khóa AES được sử dụng là:
+
+$$
+\boxed{
+k’_i=(k\bmod 2^{i+1})\cdot 2^{127-i}.
+}
+$$
+
+Đặt:
+
+$$
+s_i=\sum_{j=0}^{i-1}k_j2^j.
+$$
+
+Vì các bit $k_0,\ldots,k_{i-1}$ đã biết, ta chỉ có hai khóa ứng viên:
+
+$
+K_i^{(0)}=s_i\cdot 2^{127-i},
+$
+và
+$
+K_i^{(1)}=(s_i+2^i)\cdot 2^{127-i}.
+$
+
+Đối phương chọn một plaintext tùy ý $m^*$ và nonce $N$, sau đó mã hóa bằng khóa ứng viên $K_i^{(0)}$:
+
+$$
+\hat{c}_2^{(0)}
+=\operatorname{AES\text{-}GCM}_{K_i^{(0)}}(m^*;N).
+$$
+
+Tiếp theo, gửi $(\hat{c}_{1,i},\hat{c}_2^{(0)})$ đến server. Nếu server phản hồi ``OK’’, ta kết luận $k_i=0$. Ngược lại, nếu server không phản hồi, ta kết luận $k_i=1$ với xác suất rất cao.
+
+Lặp lại quá trình này từ $i=0$ đến $i=127$, đối phương có thể khôi phục toàn bộ khóa AES:
+
+$$
+k=k_{127}k_{126}\cdots k_1k_0.
+$$
+
+Cuối cùng, khi đã biết khóa $k$, đối phương giải mã ciphertext ban đầu $c_2$ để thu được plaintext:
+
+$$
+\boxed{
+m=\operatorname{AES\text{-}GCM}^{-1}_k(c_2).
+}
+$$
+
+Về mặt xác suất, vẫn có khả năng tag được kiểm tra tình cờ trùng khớp dù sử dụng khóa sai. Với tag 128 bit và giả định đầu ra xác thực có tính chất như ngẫu nhiên, xác suất này xấp xỉ:
+$$
+P(\text{accept}\mid K_i^{(1)}\neq K_i^{(0)})
+\approx \frac{1}{2^{128}}.
+$$
+
+Như vậy, đối phương có thể khôi phục toàn bộ khóa AES 128-bit bằng tối đa 128 truy vấn đến server, sau đó sử dụng khóa thu được để giải mã ciphertext $c_2$ và khôi phục plaintext $m$ với xác suất rất cao.
+
 \end{loigiai}
