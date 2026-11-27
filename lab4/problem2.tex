@@ -21,10 +21,11 @@ $m'=s^e \bmod n$ and checks that $m'=m$.
 \begin{enumerate}[label=(\alph*)]
 \item Cặp $(s^e \bmod n, s)$ là cặp message, signature hợp lệ của Alice.
 \item Adversary thực hiện như sau: \begin{enumerate}[label=\roman*.]
-\item Chọn $x \in [2, n - 1]$ bất kì sao cho $\gcd(x, n) = 1$.
-\item Adversary truy vấn signing oracle với message $m' = mx^e \bmod n$ và nhận được signature $s' = m'^d \bmod n =
-(mx^e)^d\bmod n = m^d \bmod n$. Do đó $s'$ cũng là signature của Alice đối với $m$. Ta có hai trường hợp \begin{itemize}
-\item Nếu $\gcd(m, n) = 1$, theo slide 7.33, thì $m'\ne m$. Do đó truy vấn với message $m'$ hợp lệ.
+\item Chọn $x \in [2, n - 1]$ bất kì sao cho $\gcd(x, n) = \gcd(x + 1, n)= 1$.
+\item Adversary truy vấn signing oracle với message $m_1 = mx^e \bmod n$ và nhận được signature $s_1 = m_1^d \bmod n =
+(mx^e)^d\bmod n = m^dx \bmod n$ và message $m_2 = m(x+1)^e\bmod n$ và nhận được signature $s_2 = m^d(x + 1)\bmod n$. Do
+đó $s_2 - s_1 = m^d\bmod n$ là signature của Alice đối với $m$. Ta có hai trường hợp \begin{itemize}
+\item Nếu $\gcd(m, n) = 1$, theo slide 7.33, thì $m_1, m_2\ne m$. Do đó truy vấn với message $m_1, m_2$ hợp lệ.
 \item Nếu $\gcd(m, n) \ne 1$ khi đó nếu $n = pq$ thì $m = p$ hoặc $m = q$. Lúc đó ta có thể tính được $\phi(n)$ và tính
 được private key của Alice. Khi đó, RSA total break.
 \end{itemize}
