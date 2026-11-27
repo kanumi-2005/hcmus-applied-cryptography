@@ -26,8 +26,8 @@ $m'=s^e \bmod n$ and checks that $m'=m$.
 (mx^e)^d\bmod n = m^dx \bmod n$ và message $m_2 = m(x+1)^e\bmod n$ và nhận được signature $s_2 = m^d(x + 1)\bmod n$. Do
 đó $s_2 - s_1 = m^d\bmod n$ là signature của Alice đối với $m$. Ta có hai trường hợp \begin{itemize}
 \item Nếu $\gcd(m, n) = 1$, theo slide 7.33, thì $m_1, m_2\ne m$. Do đó truy vấn với message $m_1, m_2$ hợp lệ.
-\item Nếu $\gcd(m, n) \ne 1$ khi đó nếu $n = pq$ thì $m = p$ hoặc $m = q$. Lúc đó ta có thể tính được $\phi(n)$ và tính
-được private key của Alice. Khi đó, RSA total break.
+\item Nếu $d = \gcd(m, n) \ne 1$, khi đó nếu $n = pq$ thì $d = p$ hoặc $d = q$. Lúc đó ta có thể tính được $p$ và $q$,
+từ đó tính được $\phi(n)$ và private key của Alice. Khi đó, RSA total break.
 \end{itemize}
 \end{enumerate}
 \end{enumerate}
