@@ -18,4 +18,22 @@ that two people select the same prime is exceedingly small.
 \end{problem}
 
 \begin{loigiai}
+Nếu $n$ là số nguyên 1024 bit thì $2^{1023} \le n < 2^{1024}$. Khi đó, số số nguyên tố 1024 bit là \begin{align*}
+N = \pi(2^{1024}) - \pi(2^{1023}) &> 2^{1024}/\ln{2^{1024}} - 1.25\cdot 2^{1023}/\ln{2^{1023}} \approx 2^{1023}\cdot
+1.05\times10^{-3},\\
+\intertext{và}
+N = \pi(2^{1024}) - \pi(2^{1023}) &< 1.25\cdot 2^{1024}/\ln{2^{1024}} - 2^{1023}/\ln{2^{1023}} \approx 2^{1023}\cdot
+2.11\times 10^{-3}.
+\end{align*} Do có $2^{1023}$ số nguyên 1024 bit, xác suất để số nguyên 1024 bit được chọn ngẫu nhiên đều là
+\begin{equation*}
+p \in [1.05\times 10^{-3}, 2.11\times 10^{-3}].
+\end{equation*} Gọi $X$ là biến ngẫu nhiên đại diện số lần chọn số nguyên 1024 bit ngẫu nhiên đều và độc lập trước khi
+ra được số nguyên tố. Ta có $P(X = k) = (1 - p)^{k}p$ với mọi $k \in \mathbb{Z}^+$. Khi đó, kì vọng số lần chọn
+(lặp) cho tới khi ra số nguyên tố là \begin{equation*}
+\mathbb{E}[X] = \sum_{k = 0}^\infty k(1 - p)^{k}p = (1-p)p \sum_{k = 0}^\infty k(1-p)^{k - 1} = \frac{1}{p} - 1.
+\end{equation*}(Từ $\sum_{k = 0}^\infty x^k = 1/(1 - x)$ lấy đạo hàm hai vế và thay $x = 1 - p$.) Vậy kì vọng số lần lặp
+trước khi ra số nguyên tố trong đoạn $[0.47\times 10^3 - 1, 0.95 \times 10^{3} - 1]$.
+
+Gọi $Y$ là biến ngẫu nhiên đại diện cho số lần số nguyên tố được chọn trước khi gặp lại một số nguyên lần thứ hai. Theo
+Nghịch lý ngày sinh nhật thì $E[Y] \approx \sqrt{\pi N / 2}$.
 \end{loigiai}
